@@ -133,13 +133,22 @@ function updateConnectionStatus(active) {
   connectionActive = active;
   const statusIndicator = document.getElementById('connectionStatus');
   const statusText = document.getElementById('connectionStatusText');
+  const topDot = document.getElementById('topConnectionDot');
 
   if (active) {
     statusIndicator.className = 'status-indicator id-online';
     statusText.textContent = 'API Terhubung';
+    if (topDot) {
+      topDot.className = 'action-status-dot online';
+      topDot.parentElement.title = 'API Terhubung (Klik untuk tes ulang)';
+    }
   } else {
     statusIndicator.className = 'status-indicator id-offline';
     statusText.textContent = 'API Terputus';
+    if (topDot) {
+      topDot.className = 'action-status-dot offline';
+      topDot.parentElement.title = 'API Terputus (Klik untuk tes ulang)';
+    }
   }
 }
 
@@ -245,11 +254,20 @@ function renderInputTable(data) {
     return `
       <tr data-row="${p.row}" data-barcode="${p.barcode}">
         <td>
-          <span class="prod-name">${p.nama}</span>
-          <span class="prod-barcode">${p.barcode || '–'}</span>
+          <div class="prod-header-mobile">
+            <div>
+              <span class="prod-name">${p.nama}</span>
+              <span class="prod-barcode">${p.barcode || '–'}</span>
+            </div>
+            <div class="prod-total-mobile">
+              <span class="mobile-label">Total Fisik</span>
+              <span class="row-total-val" id="mobile-total-${p.row}">${calcTotal(valGrocery, valGudang, valProdukBaru)}</span>
+            </div>
+          </div>
         </td>
         <td class="td-center">
           <div class="cell-input-wrapper">
+            <span class="mobile-label">Grocery</span>
             <input type="number" class="grid-input ${isModGrocery}" min="0" 
               data-field="grocery" data-row="${p.row}" value="${valGrocery}"
               oninput="onFieldChange(this, ${p.row}, 'grocery')">
@@ -257,6 +275,7 @@ function renderInputTable(data) {
         </td>
         <td class="td-center">
           <div class="cell-input-wrapper">
+            <span class="mobile-label">Gudang</span>
             <input type="number" class="grid-input ${isModGudang}" min="0" 
               data-field="gudang" data-row="${p.row}" value="${valGudang}"
               oninput="onFieldChange(this, ${p.row}, 'gudang')">
@@ -264,6 +283,7 @@ function renderInputTable(data) {
         </td>
         <td class="td-center">
           <div class="cell-input-wrapper">
+            <span class="mobile-label">Baru</span>
             <input type="number" class="grid-input ${isModProdukBaru}" min="0" 
               data-field="produkBaru" data-row="${p.row}" value="${valProdukBaru}"
               oninput="onFieldChange(this, ${p.row}, 'produkBaru')">
@@ -274,6 +294,7 @@ function renderInputTable(data) {
         </td>
         <td class="td-center">
           <div class="cell-input-wrapper">
+            <span class="mobile-label">Sistem</span>
             <input type="number" class="grid-input ${isModOnHand}" min="0" 
               data-field="onHand" data-row="${p.row}" value="${valOnHand}"
               oninput="onFieldChange(this, ${p.row}, 'onHand')">
@@ -352,8 +373,14 @@ function onFieldChange(el, row, field) {
     const d = rowEl.querySelector('[data-field="gudang"]')?.value || 0;
     const p = rowEl.querySelector('[data-field="produkBaru"]')?.value || 0;
     const totalEl = document.getElementById(`total-${row}`);
+    const mobileTotalEl = document.getElementById(`mobile-total-${row}`);
+    const totalVal = calcTotal(g, d, p);
+    
     if (totalEl) {
-      totalEl.textContent = calcTotal(g, d, p);
+      totalEl.textContent = totalVal;
+    }
+    if (mobileTotalEl) {
+      mobileTotalEl.textContent = totalVal;
     }
   }
 
@@ -868,12 +895,19 @@ function closeModal(e) {
 //  NAVIGATION PAGE CONTROLLER
 // ═══════════════════════════════════════════════
 function showPage(name) {
-  // Navigation elements active class
+  // Navigation elements active class (Desktop sidebar)
   document.querySelectorAll('.nav-item').forEach(item => {
     item.classList.remove('active');
   });
   const activeNavItem = document.getElementById(`nav-${name}`);
   if (activeNavItem) activeNavItem.classList.add('active');
+
+  // Navigation elements active class (Mobile bottom navigation)
+  document.querySelectorAll('.bottom-nav-item').forEach(item => {
+    item.classList.remove('active');
+  });
+  const activeBottomItem = document.getElementById(`btn-nav-${name}`);
+  if (activeBottomItem) activeBottomItem.classList.add('active');
 
   // Page sections active class
   document.querySelectorAll('.page-section').forEach(section => {

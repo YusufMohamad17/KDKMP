@@ -1295,40 +1295,176 @@ tfoot td {
   border-top: 2px solid var(--card-border);
 }
 
+/* Hide mobile-specific items on desktop */
+.logo-box-sm {
+  display: none;
+}
+.mobile-top-actions {
+  display: none;
+}
+.mobile-label {
+  display: none;
+}
+.prod-total-mobile {
+  display: none;
+}
+.bottom-nav {
+  display: none;
+}
+
 /* ── RESPONSIVE RESPONSES & MOBILE ADJUSTMENTS ──────────────────── */
 @media (max-width: 900px) {
   .sidebar {
-    transform: translateX(-100%);
-  }
-  
-  .sidebar.open {
-    transform: translateX(0);
+    display: none !important; /* Sembunyikan sidebar pada layar kecil */
   }
   
   .main-content {
-    margin-left: 0;
-  }
-  
-  .menu-toggle {
-    display: block;
+    margin-left: 0 !important;
+    padding-bottom: 90px; /* Ruang untuk bottom navbar */
   }
   
   .topbar {
     padding: 0 16px;
+    height: 60px;
+  }
+  
+  .logo-box-sm {
+    display: flex;
+    background: linear-gradient(135deg, var(--emerald-500), var(--indigo-500));
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: var(--radius-sm);
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+
+  .topbar-welcome {
+    display: flex;
+    align-items: center;
+  }
+  
+  .topbar-title {
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
+  }
+  
+  .topbar-sub {
+    display: none; /* Sembunyikan subtitle agar kompak di HP */
+  }
+  
+  .meta-clock {
+    display: none; /* Sembunyikan jam analog/digital di atas */
+  }
+  
+  .mobile-top-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .top-action-btn {
+    background: var(--bg-primary);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all var(--transition-fast);
+  }
+  
+  .top-action-btn:hover {
+    background-color: var(--slate-50);
+  }
+  
+  .action-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  
+  .action-status-dot.online {
+    background-color: var(--emerald-500);
+    box-shadow: 0 0 4px var(--emerald-500);
+  }
+  
+  .action-status-dot.offline {
+    background-color: var(--rose-500);
+    box-shadow: 0 0 4px var(--rose-500);
+  }
+
+  /* Bottom Navigation Bar */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--bg-sidebar);
+    height: 60px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 100;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
+    padding: 0 4px;
+  }
+
+  .bottom-nav-item {
+    background: none;
+    border: none;
+    color: var(--sidebar-text-inactive);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    cursor: pointer;
+    flex: 1;
+    height: 100%;
+    font-size: 0.68rem;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+    padding: 4px 0;
+  }
+
+  .bottom-nav-item.active {
+    color: #34d399; /* Emerald Green */
+    font-weight: 700;
+  }
+
+  .bottom-nav-icon {
+    font-size: 1.1rem;
+  }
+
+  .bottom-nav-label {
+    font-size: 0.6rem;
   }
   
   .content-body {
-    padding: 16px;
+    padding: 12px;
   }
   
+  /* Floating Save Bar di atas bottom nav */
   .save-bar {
-    left: 16px;
-    right: 16px;
-    bottom: 16px;
+    left: 12px;
+    right: 12px;
+    bottom: 72px; /* Letakkan tepat di atas bottom nav 60px */
     padding: 12px 16px;
     flex-direction: column;
     gap: 12px;
     align-items: stretch;
+    border-radius: var(--radius-lg);
   }
   
   .save-bar-actions {
@@ -1337,6 +1473,289 @@ tfoot td {
   
   .stat-row {
     grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  /* ── RESPONSIVE TABLE TO MINIMALIST CARDS ────────────────── */
+  /* Halaman Input */
+  #page-input table,
+  #page-input tbody,
+  #page-input tr,
+  #page-input td {
+    display: block;
+    width: 100%;
+  }
+  
+  #page-input thead {
+    display: none; /* Sembunyikan header tabel desktop */
+  }
+  
+  #page-input tr {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 14px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-sm);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  #page-input tr:hover td {
+    background-color: transparent !important;
+  }
+  
+  #page-input td {
+    padding: 0 !important;
+    border-bottom: none !important;
+  }
+  
+  /* Card Header */
+  #page-input td:first-child {
+    grid-column: span 2;
+    border-bottom: 1px solid var(--card-border) !important;
+    padding-bottom: 8px !important;
+    margin-bottom: 4px;
+  }
+  
+  .prod-header-mobile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     gap: 12px;
+    width: 100%;
+  }
+
+  .prod-name {
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .prod-total-mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    flex-shrink: 0;
+  }
+  
+  .prod-total-mobile .mobile-label {
+    font-size: 0.55rem;
+    margin-bottom: 1px;
+  }
+
+  .prod-total-mobile .row-total-val {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--indigo-600);
+    background-color: var(--indigo-50);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  
+  /* Susun input berjejer */
+  #page-input td:nth-child(2),
+  #page-input td:nth-child(3),
+  #page-input td:nth-child(4),
+  #page-input td:nth-child(6) {
+    grid-column: span 1;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 8px 10px !important;
+  }
+  
+  #page-input .cell-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: stretch;
+  }
+
+  #page-input .grid-input {
+    width: 100%;
+    text-align: center;
+    font-size: 0.9rem;
+    padding: 5px;
+    background-color: var(--card-bg);
+  }
+  
+  .mobile-label {
+    display: block;
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+    text-align: center;
+  }
+  
+  #page-input td:nth-child(5) {
+    display: none; /* Sembunyikan kolom total desktop */
+  }
+
+  /* Halaman Rekap */
+  #page-rekap table,
+  #page-rekap tbody,
+  #page-rekap tr,
+  #page-rekap td {
+    display: block;
+    width: 100%;
+  }
+  
+  #page-rekap thead,
+  #page-rekap tfoot {
+    display: none;
+  }
+
+  #page-rekap tr {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 12px;
+    margin-bottom: 8px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  #page-rekap td {
+    padding: 0 !important;
+    border-bottom: none !important;
+  }
+
+  #page-rekap td:first-child {
+    grid-column: span 3;
+    border-bottom: 1px dashed var(--card-border) !important;
+    padding-bottom: 6px !important;
+    margin-bottom: 4px;
+  }
+
+  #page-rekap td:nth-child(2),
+  #page-rekap td:nth-child(3),
+  #page-rekap td:nth-child(4) {
+    grid-column: span 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6px !important;
+    border-radius: var(--radius-sm);
+  }
+
+  #page-rekap td:nth-child(2) { background-color: var(--emerald-50); }
+  #page-rekap td:nth-child(3) { background-color: var(--indigo-50); }
+  #page-rekap td:nth-child(4) { background-color: var(--rose-50); }
+
+  #page-rekap td:nth-child(2)::before {
+    content: 'AWAL';
+    font-size: 0.55rem;
+    font-weight: 700;
+    color: var(--emerald-600);
+    margin-bottom: 2px;
+  }
+
+  #page-rekap td:nth-child(3)::before {
+    content: 'AKHIR';
+    font-size: 0.55rem;
+    font-weight: 700;
+    color: var(--indigo-600);
+    margin-bottom: 2px;
+  }
+
+  #page-rekap td:nth-child(4)::before {
+    content: 'TERJUAL';
+    font-size: 0.55rem;
+    font-weight: 700;
+    color: var(--rose-600);
+    margin-bottom: 2px;
+  }
+
+  /* Penyesuaian Dashboard Seluler */
+  .dashboard-banner {
+    padding: 16px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .banner-progress {
+    width: 100%;
+    justify-content: center;
+    padding: 12px;
+  }
+
+  .section-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .date-picker-wrap {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .shift-pill-selector {
+    width: 100%;
+  }
+
+  .shift-pill {
+    flex: 1;
+    text-align: center;
+  }
+
+  .table-control-row {
+    padding: 12px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .search-input-wrap {
+    width: 100%;
+  }
+
+  .verification-wrap,
+  .verification-wrap .btn {
+    width: 100%;
+  }
+  
+  /* Catalog Master Produk Seluler */
+  #page-produk table,
+  #page-produk tbody,
+  #page-produk tr,
+  #page-produk td {
+    display: block;
+    width: 100%;
+  }
+  
+  #page-produk thead {
+    display: none;
+  }
+  
+  #page-produk tr {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    margin-bottom: 8px;
+    box-shadow: var(--shadow-sm);
+  }
+  
+  #page-produk td {
+    padding: 0 !important;
+    border-bottom: none !important;
+  }
+  
+  #page-produk td:first-child {
+    display: none; /* Sembunyikan nomor urut di HP */
+  }
+  
+  #page-produk td:nth-child(2) {
+    margin-bottom: 4px;
   }
 }

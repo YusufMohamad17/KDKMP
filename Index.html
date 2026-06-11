@@ -12,85 +12,68 @@
 </head>
 <body>
 
-  <!-- SIDEBAR NAVIGATION -->
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <div class="logo-box">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+  <!-- TOP NAVBAR (Main Navigation) -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo-box-sm">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L3 7L12 12L21 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M3 7V17L12 22V12" stroke="currentColor" stroke-width="2" stroke-linejoin="round" opacity="0.8"/>
+          <path d="M21 7V17L12 22" stroke="currentColor" stroke-width="2" stroke-linejoin="round" opacity="0.6"/>
+          <path d="M8 11.5L11 14.5L16 9" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-      <div>
+      <div class="topbar-branding">
         <h1 class="brand-title">KDKMP Kelutan</h1>
         <p class="brand-sub">Stok Opname Digital</p>
       </div>
     </div>
 
-    <nav class="sidebar-nav">
-      <button class="nav-item active" onclick="showPage('dashboard')" id="nav-dashboard">
-        <span class="nav-icon">📊</span>
-        <span>Dashboard</span>
+    <!-- Center: Desktop Horizontal Nav links -->
+    <nav class="top-nav-desktop">
+      <button class="nav-item-top active" onclick="showPage('dashboard')" id="nav-dashboard">
+        📊 Dashboard
       </button>
-      <button class="nav-item" onclick="showPage('input')" id="nav-input">
-        <span class="nav-icon">✏️</span>
-        <span>Input Stok</span>
+      <button class="nav-item-top" onclick="showPage('input')" id="nav-input">
+        ✏️ Input Stok
       </button>
-      <button class="nav-item" onclick="showPage('rekap')" id="nav-rekap">
-        <span class="nav-icon">📈</span>
-        <span>Rekap Penjualan</span>
+      <button class="nav-item-top" onclick="showPage('rekap')" id="nav-rekap">
+        📈 Rekap Penjualan
       </button>
-      <button class="nav-item" onclick="showPage('produk')" id="nav-produk">
-        <span class="nav-icon">📦</span>
-        <span>Master Produk</span>
+      <button class="nav-item-top" onclick="showPage('produk')" id="nav-produk">
+        📦 Master Produk
       </button>
-      <button class="nav-item" onclick="showPage('pengaturan')" id="nav-pengaturan">
-        <span class="nav-icon">⚙️</span>
-        <span>Pengaturan</span>
+      <button class="nav-item-top" onclick="showPage('pengaturan')" id="nav-pengaturan">
+        ⚙️ Pengaturan
       </button>
     </nav>
 
-    <div class="sidebar-footer">
-      <div class="status-indicator id-offline" id="connectionStatus">
-        <span class="status-dot"></span>
-        <span class="status-text" id="connectionStatusText">API Belum Terhubung</span>
+    <!-- Right: Connection dot & quick actions -->
+    <div class="topbar-right">
+      <div class="meta-clock">
+        <span class="clock-date" id="headerDate">–</span>
+        <span class="clock-time" id="headerTime">–</span>
       </div>
+      
+      <div class="status-badge" id="connectionStatus" title="Status Hubungan Spreadsheet">
+        <span class="status-dot offline" id="topConnectionDot"></span>
+        <span class="status-text" id="connectionStatusText">API Terputus</span>
+      </div>
+      
+      <button class="btn-top-action" onclick="testConnection()" title="Tes Koneksi Ulang">⚡ Tes API</button>
     </div>
-  </aside>
+  </header>
 
   <!-- MAIN WINDOW -->
   <main class="main-content">
-    <!-- TOP BAR -->
-    <header class="topbar">
-      <div class="topbar-welcome">
-        <div class="logo-box-sm">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-          </svg>
-        </div>
-        <div>
-          <h2 class="topbar-title" id="pageTitle">Dashboard Ringkasan</h2>
-          <p class="topbar-sub" id="pageSubtitle">Selamat datang di Sistem Stok Opname Digital KDKMP Kelutan.</p>
-        </div>
-      </div>
-      <div class="topbar-meta">
-        <div class="meta-clock">
-          <span class="clock-date" id="headerDate">–</span>
-          <span class="clock-time" id="headerTime">–</span>
-        </div>
-        <div class="mobile-top-actions">
-          <button class="top-action-btn" onclick="testConnection()" title="Tes Koneksi API">
-            <span class="action-status-dot offline" id="topConnectionDot"></span>
-            ⚡ Tes API
-          </button>
-          <button class="top-action-btn" onclick="showPage('pengaturan')" title="Pengaturan">
-            ⚙️
-          </button>
-        </div>
-      </div>
-    </header>
 
     <!-- CONTENT WRAPPER -->
     <div class="content-body">
+      <!-- Page Header -->
+      <div class="page-header">
+        <h2 class="page-title" id="pageTitle">Dashboard Ringkasan</h2>
+        <p class="page-subtitle" id="pageSubtitle">Selamat datang di Sistem Stok Opname Digital KDKMP Kelutan.</p>
+      </div>
 
       <!-- ═════════ PAGE: DASHBOARD ═════════ -->
       <section class="page-section active" id="page-dashboard">

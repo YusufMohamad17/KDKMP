@@ -136,17 +136,17 @@ function updateConnectionStatus(active) {
   const topDot = document.getElementById('topConnectionDot');
 
   if (active) {
-    statusIndicator.className = 'status-indicator id-online';
-    statusText.textContent = 'API Terhubung';
+    if (statusIndicator) statusIndicator.className = 'status-badge online';
+    if (statusText) statusText.textContent = 'API Terhubung';
     if (topDot) {
-      topDot.className = 'action-status-dot online';
+      topDot.className = 'status-dot online';
       topDot.parentElement.title = 'API Terhubung (Klik untuk tes ulang)';
     }
   } else {
-    statusIndicator.className = 'status-indicator id-offline';
-    statusText.textContent = 'API Terputus';
+    if (statusIndicator) statusIndicator.className = 'status-badge offline';
+    if (statusText) statusText.textContent = 'API Terputus';
     if (topDot) {
-      topDot.className = 'action-status-dot offline';
+      topDot.className = 'status-dot offline';
       topDot.parentElement.title = 'API Terputus (Klik untuk tes ulang)';
     }
   }
@@ -254,20 +254,12 @@ function renderInputTable(data) {
     return `
       <tr data-row="${p.row}" data-barcode="${p.barcode}">
         <td>
-          <div class="prod-header-mobile">
-            <div>
-              <span class="prod-name">${p.nama}</span>
-              <span class="prod-barcode">${p.barcode || '–'}</span>
-            </div>
-            <div class="prod-total-mobile">
-              <span class="mobile-label">Total Fisik</span>
-              <span class="row-total-val" id="mobile-total-${p.row}">${calcTotal(valGrocery, valGudang, valProdukBaru)}</span>
-            </div>
-          </div>
+          <span class="prod-name">${p.nama}</span>
+          <span class="prod-barcode">${p.barcode || '–'}</span>
         </td>
         <td class="td-center">
           <div class="cell-input-wrapper">
-            <span class="mobile-label">Grocery</span>
+            <span class="mobile-label">Stok Grocery</span>
             <input type="number" class="grid-input ${isModGrocery}" min="0" 
               data-field="grocery" data-row="${p.row}" value="${valGrocery}"
               oninput="onFieldChange(this, ${p.row}, 'grocery')">
@@ -275,7 +267,7 @@ function renderInputTable(data) {
         </td>
         <td class="td-center">
           <div class="cell-input-wrapper">
-            <span class="mobile-label">Gudang</span>
+            <span class="mobile-label">Stok Gudang</span>
             <input type="number" class="grid-input ${isModGudang}" min="0" 
               data-field="gudang" data-row="${p.row}" value="${valGudang}"
               oninput="onFieldChange(this, ${p.row}, 'gudang')">
@@ -283,7 +275,7 @@ function renderInputTable(data) {
         </td>
         <td class="td-center">
           <div class="cell-input-wrapper">
-            <span class="mobile-label">Baru</span>
+            <span class="mobile-label">Produk Baru</span>
             <input type="number" class="grid-input ${isModProdukBaru}" min="0" 
               data-field="produkBaru" data-row="${p.row}" value="${valProdukBaru}"
               oninput="onFieldChange(this, ${p.row}, 'produkBaru')">
@@ -294,7 +286,7 @@ function renderInputTable(data) {
         </td>
         <td class="td-center">
           <div class="cell-input-wrapper">
-            <span class="mobile-label">Sistem</span>
+            <span class="mobile-label">On Hand (Sistem)</span>
             <input type="number" class="grid-input ${isModOnHand}" min="0" 
               data-field="onHand" data-row="${p.row}" value="${valOnHand}"
               oninput="onFieldChange(this, ${p.row}, 'onHand')">
@@ -373,14 +365,10 @@ function onFieldChange(el, row, field) {
     const d = rowEl.querySelector('[data-field="gudang"]')?.value || 0;
     const p = rowEl.querySelector('[data-field="produkBaru"]')?.value || 0;
     const totalEl = document.getElementById(`total-${row}`);
-    const mobileTotalEl = document.getElementById(`mobile-total-${row}`);
     const totalVal = calcTotal(g, d, p);
     
     if (totalEl) {
       totalEl.textContent = totalVal;
-    }
-    if (mobileTotalEl) {
-      mobileTotalEl.textContent = totalVal;
     }
   }
 
@@ -895,8 +883,8 @@ function closeModal(e) {
 //  NAVIGATION PAGE CONTROLLER
 // ═══════════════════════════════════════════════
 function showPage(name) {
-  // Navigation elements active class (Desktop sidebar)
-  document.querySelectorAll('.nav-item').forEach(item => {
+  // Navigation elements active class (Desktop top navbar)
+  document.querySelectorAll('.nav-item-top').forEach(item => {
     item.classList.remove('active');
   });
   const activeNavItem = document.getElementById(`nav-${name}`);
@@ -920,34 +908,58 @@ function showPage(name) {
   const titleEl = document.getElementById('pageTitle');
   const subEl = document.getElementById('pageSubtitle');
 
-  switch (name) {
-    case 'dashboard':
-      titleEl.textContent = 'Dashboard Ringkasan';
-      subEl.textContent = 'Selamat datang di Sistem Stok Opname Digital KDKMP Kelutan.';
-      updateDashboardInfo();
-      break;
-    case 'input':
-      titleEl.textContent = 'Pencatatan Stok Opname';
-      subEl.textContent = 'Input jumlah fisik stok grocery, gudang, produk baru, dan stok sistem.';
-      break;
-    case 'rekap':
-      titleEl.textContent = 'Laporan Penjualan Harian';
-      subEl.textContent = 'Perbandingan data stok Awal Shift vs Akhir Shift dan kalkulasi unit terjual.';
-      loadRekap();
-      break;
-    case 'produk':
-      titleEl.textContent = 'Master Katalog Produk';
-      subEl.textContent = 'Daftar produk terdaftar di sistem. Tambah master produk baru.';
-      loadProduk();
-      break;
-    case 'pengaturan':
-      titleEl.textContent = 'Konfigurasi Sistem';
-      subEl.textContent = 'Hubungkan web app static ini dengan backend Google Sheets API Anda.';
-      break;
+  if (titleEl) {
+    switch (name) {
+      case 'dashboard':
+        titleEl.textContent = 'Dashboard Ringkasan';
+        break;
+      case 'input':
+        titleEl.textContent = 'Pencatatan Stok Opname';
+        break;
+      case 'rekap':
+        titleEl.textContent = 'Laporan Penjualan Harian';
+        break;
+      case 'produk':
+        titleEl.textContent = 'Master Katalog Produk';
+        break;
+      case 'pengaturan':
+        titleEl.textContent = 'Konfigurasi Sistem';
+        break;
+    }
+  }
+
+  if (subEl) {
+    switch (name) {
+      case 'dashboard':
+        subEl.textContent = 'Selamat datang di Sistem Stok Opname Digital KDKMP Kelutan.';
+        break;
+      case 'input':
+        subEl.textContent = 'Input jumlah fisik stok grocery, gudang, produk baru, dan stok sistem.';
+        break;
+      case 'rekap':
+        subEl.textContent = 'Perbandingan data stok Awal Shift vs Akhir Shift dan kalkulasi unit terjual.';
+        break;
+      case 'produk':
+        subEl.textContent = 'Daftar produk terdaftar di sistem. Tambah master produk baru.';
+        break;
+      case 'pengaturan':
+        subEl.textContent = 'Hubungkan web app static ini dengan backend Google Sheets API Anda.';
+        break;
+    }
+  }
+
+  // Handle specific page loading functions
+  if (name === 'dashboard') {
+    updateDashboardInfo();
+  } else if (name === 'rekap') {
+    loadRekap();
+  } else if (name === 'produk') {
+    loadProduk();
   }
 
   // Sidebar mobile toggle close
-  document.querySelector('.sidebar').classList.remove('open');
+  const sidebar = document.querySelector('.sidebar');
+  if (sidebar) sidebar.classList.remove('open');
 }
 
 function quickNav(page, shift = null) {
@@ -958,7 +970,8 @@ function quickNav(page, shift = null) {
 }
 
 function toggleSidebar() {
-  document.querySelector('.sidebar').classList.toggle('open');
+  const sidebar = document.querySelector('.sidebar');
+  if (sidebar) sidebar.classList.toggle('open');
 }
 
 // ═══════════════════════════════════════════════

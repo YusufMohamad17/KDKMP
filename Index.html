@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stok Opname – KDKMP Kelutan</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- SIDEBAR NAVIGATION -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo-box">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="brand-title">KDKMP Kelutan</h1>
+        <p class="brand-sub">Stok Opname Digital</p>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" onclick="showPage('dashboard')" id="nav-dashboard">
+        <span class="nav-icon">📊</span>
+        <span>Dashboard</span>
+      </button>
+      <button class="nav-item" onclick="showPage('input')" id="nav-input">
+        <span class="nav-icon">✏️</span>
+        <span>Input Stok</span>
+      </button>
+      <button class="nav-item" onclick="showPage('rekap')" id="nav-rekap">
+        <span class="nav-icon">📈</span>
+        <span>Rekap Penjualan</span>
+      </button>
+      <button class="nav-item" onclick="showPage('produk')" id="nav-produk">
+        <span class="nav-icon">📦</span>
+        <span>Master Produk</span>
+      </button>
+      <button class="nav-item" onclick="showPage('pengaturan')" id="nav-pengaturan">
+        <span class="nav-icon">⚙️</span>
+        <span>Pengaturan</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="status-indicator id-offline" id="connectionStatus">
+        <span class="status-dot"></span>
+        <span class="status-text" id="connectionStatusText">API Belum Terhubung</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN WINDOW -->
+  <main class="main-content">
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="topbar-welcome">
+        <span class="menu-toggle" onclick="toggleSidebar()">☰</span>
+        <div>
+          <h2 class="topbar-title" id="pageTitle">Dashboard Ringkasan</h2>
+          <p class="topbar-sub" id="pageSubtitle">Selamat datang di Sistem Stok Opname Digital KDKMP Kelutan.</p>
+        </div>
+      </div>
+      <div class="topbar-meta">
+        <div class="meta-clock">
+          <span class="clock-date" id="headerDate">–</span>
+          <span class="clock-time" id="headerTime">–</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT WRAPPER -->
+    <div class="content-body">
+
+      <!-- ═════════ PAGE: DASHBOARD ═════════ -->
+      <section class="page-section active" id="page-dashboard">
+        <!-- Dashboard Welcome Banner -->
+        <div class="dashboard-banner">
+          <div class="banner-info">
+            <h3>Monitoring Stok & Penjualan Real-time</h3>
+            <p>Kelola pencatatan shift awal, shift akhir, dan kalkulasi otomatis produk terjual langsung terintegrasi dengan Google Sheets.</p>
+          </div>
+          <div class="banner-progress">
+            <div class="progress-ring-wrap">
+              <svg class="progress-ring" width="80" height="80">
+                <circle class="progress-ring-bg" stroke="rgba(255,255,255,0.2)" stroke-width="6" fill="transparent" r="34" cx="40" cy="40"/>
+                <circle class="progress-ring-bar" id="completionRing" stroke="#ffffff" stroke-width="6" fill="transparent" r="34" cx="40" cy="40" stroke-dasharray="213.6" stroke-dashoffset="213.6"/>
+              </svg>
+              <div class="progress-text" id="completionPercent">0%</div>
+            </div>
+            <div class="progress-info">
+              <span class="p-label">Progress Stok Opname</span>
+              <span class="p-value" id="progressRatio">0 / 0 Produk</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metric Grid -->
+        <div class="metric-grid">
+          <div class="metric-card bg-emerald">
+            <div class="mc-header">
+              <span class="mc-title">Sudah Diinput</span>
+              <span class="mc-icon">✅</span>
+            </div>
+            <div class="mc-value" id="dashFilledCount">0</div>
+            <div class="mc-footer">Produk fisik tercatat</div>
+          </div>
+          <div class="metric-card bg-indigo">
+            <div class="mc-header">
+              <span class="mc-title">Belum Diinput</span>
+              <span class="mc-icon">⏳</span>
+            </div>
+            <div class="mc-value" id="dashEmptyCount">0</div>
+            <div class="mc-footer">Menunggu input data</div>
+          </div>
+          <div class="metric-card bg-slate">
+            <div class="mc-header">
+              <span class="mc-title">Total Produk</span>
+              <span class="mc-icon">📦</span>
+            </div>
+            <div class="mc-value" id="dashTotalCount">0</div>
+            <div class="mc-footer" id="dashActiveDate">Tanggal: -</div>
+          </div>
+        </div>
+
+        <!-- Dashboard Actions & Connection Alert -->
+        <div class="grid-layout-2">
+          <div class="dashboard-card">
+            <h3 class="dc-title">Aktivitas Hari Ini</h3>
+            <div class="activity-timeline">
+              <div class="activity-item">
+                <span class="act-dot act-green"></span>
+                <div class="act-content">
+                  <span class="act-time">Shift Awal</span>
+                  <p class="act-desc">Input stok grocery, gudang, dan stok sistem di awal shift pagi untuk inisialisasi.</p>
+                  <button class="btn btn-secondary btn-xs" onclick="quickNav('input', 'awal')">Input Shift Awal</button>
+                </div>
+              </div>
+              <div class="activity-item">
+                <span class="act-dot act-blue"></span>
+                <div class="act-content">
+                  <span class="act-time">Shift Akhir</span>
+                  <p class="act-desc">Input stok fisik sisa di akhir shift malam. Terjual otomatis dikalkulasi.</p>
+                  <button class="btn btn-secondary btn-xs" onclick="quickNav('input', 'akhir')">Input Shift Akhir</button>
+                </div>
+              </div>
+              <div class="activity-item">
+                <span class="act-dot act-yellow"></span>
+                <div class="act-content">
+                  <span class="act-time">Rekap Penjualan</span>
+                  <p class="act-desc">Lihat rekapitulasi data penjualan harian dan total kuantitas terjual.</p>
+                  <button class="btn btn-secondary btn-xs" onclick="quickNav('rekap')">Buka Rekap</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-card" id="connectionAlertCard">
+            <h3 class="dc-title">Status Integrasi Spreadsheet</h3>
+            <div class="setup-notice notice-warning" id="setupNotice">
+              <p><strong>Perhatian:</strong> Aplikasi belum terhubung ke Google Apps Script Web App. Anda tidak bisa sinkronisasi data.</p>
+              <button class="btn btn-primary btn-sm" onclick="showPage('pengaturan')" style="margin-top: 10px;">Setup Sekarang</button>
+            </div>
+            <div class="setup-notice notice-success" id="connectedNotice" style="display:none;">
+              <p><strong>Sistem Terkoneksi:</strong> Sinkronisasi data ke Google Sheets aktif dan berjalan normal.</p>
+              <div class="api-details">
+                <p><strong>Endpoint:</strong> <span class="api-endpoint-url" id="apiEndpointDisplay">Belum diset</span></p>
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="testConnection()" style="margin-top: 10px;">Tes Koneksi Ulang</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═════════ PAGE: INPUT STOK ═════════ -->
+      <section class="page-section" id="page-input">
+        <div class="section-actions">
+          <div class="date-picker-wrap">
+            <label for="sheetSelect" class="field-label">📅 Pilih Tanggal:</label>
+            <select class="form-select select-date" id="sheetSelect" onchange="onSheetChange()">
+              <option value="">Memuat tanggal...</option>
+            </select>
+            <button class="btn btn-icon" onclick="refreshData()" title="Segarkan Data dari Spreadsheet">🔄</button>
+          </div>
+
+          <div class="shift-pill-selector">
+            <button class="shift-pill active" id="btnAwal" onclick="setShift('awal')">🌅 Awal Shift</button>
+            <button class="shift-pill" id="btnAkhir" onclick="setShift('akhir')">🌆 Akhir Shift</button>
+          </div>
+        </div>
+
+        <div class="data-card">
+          <!-- Control Row -->
+          <div class="table-control-row">
+            <div class="search-input-wrap">
+              <span class="search-icon">🔍</span>
+              <input type="text" class="search-input" id="searchInput" placeholder="Cari barcode atau nama produk..." oninput="filterTable()">
+            </div>
+            <div class="verification-wrap">
+              <button class="btn btn-indigo" id="verifyBtn" onclick="verifySpreadsheetData()">
+                🛡️ Verifikasi Upload Spreadsheet
+              </button>
+            </div>
+          </div>
+
+          <!-- Table Container -->
+          <div class="table-container" id="tableContainer">
+            <div class="loader-container">
+              <div class="spinner"></div>
+              <span>Silakan pilih tanggal untuk memuat data...</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═════════ PAGE: REKAP PENJUALAN ═════════ -->
+      <section class="page-section" id="page-rekap">
+        <div class="section-actions">
+          <div class="date-picker-wrap">
+            <label for="rekapSheetSelect" class="field-label">📅 Pilih Tanggal Rekap:</label>
+            <select class="form-select select-date" id="rekapSheetSelect" onchange="loadRekap()">
+              <option value="">Memuat tanggal...</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="rekapContainer">
+          <div class="loader-container">
+            <div class="spinner"></div>
+            <span>Silakan pilih tanggal untuk menampilkan rekap...</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═════════ PAGE: MASTER PRODUK ═════════ -->
+      <section class="page-section" id="page-produk">
+        <div class="section-actions">
+          <button class="btn btn-primary" onclick="openAddModal()">
+            ➕ Tambah Produk Baru
+          </button>
+          <div class="search-input-wrap max-width-300">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="searchProdukInput" placeholder="Cari barcode atau nama..." oninput="filterProdukTable()">
+          </div>
+        </div>
+
+        <div class="data-card">
+          <div class="table-container" id="produkContainer">
+            <div class="loader-container">
+              <div class="spinner"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═════════ PAGE: PENGATURAN ═════════ -->
+      <section class="page-section" id="page-pengaturan">
+        <div class="dashboard-card max-width-700">
+          <h3 class="dc-title">Konfigurasi Google Apps Script API</h3>
+          <p class="settings-desc">Aplikasi ini berjalan sebagai aplikasi web statis modern. Agar dapat membaca dan menulis data ke Google Spreadsheet, Anda perlu menghubungkannya dengan Web App URL Google Apps Script Anda.</p>
+          
+          <div class="form-group" style="margin-top: 20px;">
+            <label class="form-label" for="gasUrlInput">Web App URL (Google Apps Script)</label>
+            <input type="url" class="form-input" id="gasUrlInput" placeholder="https://script.google.com/macros/s/.../exec">
+            <small class="form-hint">Pastikan Anda telah mendeploy Apps Script dengan konfigurasi <strong>Execute as: Me</strong> dan <strong>Who has access: Anyone</strong>.</small>
+          </div>
+
+          <div class="settings-actions">
+            <button class="btn btn-primary" onclick="saveSettings()">💾 Simpan Pengaturan</button>
+            <button class="btn btn-secondary" onclick="testConnection()">⚡ Tes Koneksi</button>
+          </div>
+
+          <hr class="settings-divider">
+
+          <h4 class="settings-subtitle">Panduan Singkat Mendapatkan URL:</h4>
+          <ol class="settings-steps">
+            <li>Buka spreadsheet Anda, masuk ke **Ekstensi → Apps Script**.</li>
+            <li>Salin kode dari file `Code.gs` baru di repositori ini ke editor script Anda.</li>
+            <li>Klik tombol **Deploy → New Deployment** di bagian kanan atas.</li>
+            <li>Pilih jenis deployment: **Web App**.</li>
+            <li>Ubah akses (Who has access) ke **Anyone** dan klik **Deploy**.</li>
+            <li>Salin **Web App URL** yang dihasilkan dan tempelkan pada kolom di atas.</li>
+          </ol>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- SAVE BAR (Floating bottom notification for unsaved changes) -->
+  <div class="save-bar" id="saveBar" style="display:none;">
+    <div class="save-bar-info">
+      <span class="save-bar-status" id="saveStatus">
+        <span id="changedCount">0</span> perubahan terdeteksi secara lokal.
+      </span>
+    </div>
+    <div class="save-bar-actions">
+      <button class="btn btn-secondary btn-sm" onclick="resetChanges()">↩ Batal</button>
+      <button class="btn btn-primary" id="saveBtn" onclick="saveData()">💾 Simpan Ke Sheets</button>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div class="toast-wrap" id="toastWrap"></div>
+
+  <!-- MODAL: TAMBAH PRODUK -->
+  <div class="modal-backdrop" id="addModal" onclick="closeModal(event)">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Tambah Produk Baru</h3>
+        <button class="modal-close" onclick="closeAddModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="newBarcode">Barcode / Kode Produk</label>
+          <input class="form-input" type="text" id="newBarcode" placeholder="Masukkan barcode produk">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="newNama">Nama Produk</label>
+          <input class="form-input" type="text" id="newNama" placeholder="Contoh: DANCOW Instant Frtgro 400g">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-full" onclick="closeAddModal()">Batal</button>
+        <button class="btn btn-primary btn-full" onclick="submitAddProduct()">➕ Tambah Produk</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: VERIFIKASI UPLOAD SPREADSHEET -->
+  <div class="modal-backdrop" id="verifyModal" onclick="closeModal(event)">
+    <div class="modal-dialog max-width-600">
+      <div class="modal-header">
+        <h3 class="modal-title">Hasil Verifikasi Upload Spreadsheet</h3>
+        <button class="modal-close" onclick="closeVerifyModal()">✕</button>
+      </div>
+      <div class="modal-body" id="verifyModalBody">
+        <!-- Will be loaded dynamically -->
+        <div class="loader-container">
+          <div class="spinner"></div>
+          <span>Menghubungkan ke Google Sheets untuk verifikasi data...</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary btn-full" onclick="closeVerifyModal()">Tutup Hasil Verifikasi</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -259,7 +259,7 @@ function renderInputTable(data) {
         </td>
         <td class="td-center">
           <div class="cell-input-wrapper">
-            <span class="mobile-label">Stok Grocery</span>
+            <span class="mobile-label">Groc</span>
             <input type="number" class="grid-input ${isModGrocery}" min="0" 
               data-field="grocery" data-row="${p.row}" value="${valGrocery}"
               oninput="onFieldChange(this, ${p.row}, 'grocery')">
@@ -267,7 +267,7 @@ function renderInputTable(data) {
         </td>
         <td class="td-center">
           <div class="cell-input-wrapper">
-            <span class="mobile-label">Stok Gudang</span>
+            <span class="mobile-label">Gudg</span>
             <input type="number" class="grid-input ${isModGudang}" min="0" 
               data-field="gudang" data-row="${p.row}" value="${valGudang}"
               oninput="onFieldChange(this, ${p.row}, 'gudang')">
@@ -275,7 +275,7 @@ function renderInputTable(data) {
         </td>
         <td class="td-center">
           <div class="cell-input-wrapper">
-            <span class="mobile-label">Produk Baru</span>
+            <span class="mobile-label">Baru</span>
             <input type="number" class="grid-input ${isModProdukBaru}" min="0" 
               data-field="produkBaru" data-row="${p.row}" value="${valProdukBaru}"
               oninput="onFieldChange(this, ${p.row}, 'produkBaru')">
@@ -286,7 +286,7 @@ function renderInputTable(data) {
         </td>
         <td class="td-center">
           <div class="cell-input-wrapper">
-            <span class="mobile-label">On Hand (Sistem)</span>
+            <span class="mobile-label">Sist</span>
             <input type="number" class="grid-input ${isModOnHand}" min="0" 
               data-field="onHand" data-row="${p.row}" value="${valOnHand}"
               oninput="onFieldChange(this, ${p.row}, 'onHand')">
